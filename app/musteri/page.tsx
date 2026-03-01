@@ -5,6 +5,8 @@ import { Rocket, Check, Zap, Shield, Globe, TrendingUp } from 'lucide-react';
 export default function MusteriPage() {
   const [selectedPackage, setSelectedPackage] = useState('professional');
 
+  // Vercel deploy test
+
   const packages = [
     {
       id: 'starter',
