@@ -44,9 +44,9 @@ export default function HomePage() {
             Hosting, domain, ödeme sistemi - HER ŞEY HAZIR! Sadece ürünlerinizi ekleyin ve satışa başlayın.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/musteri" className="bg-white text-purple-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 hover:text-purple-700 transition-all shadow-2xl hover:scale-105">
-              KENDİ SİTENİ KUR 🚀
-            </Link>
+            <a href="#paketler" className="bg-white text-purple-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 hover:text-purple-700 transition-all shadow-2xl hover:scale-105">
+              PAKET SEÇ 🚀
+            </a>
             <Link href="/seller" className="bg-white/10 backdrop-blur-sm border-2 border-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
               ÜRÜN SAT
             </Link>
@@ -164,16 +164,71 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-5xl font-black mb-6">Hemen Başlayın!</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Kredi kartı gerektirmez. Kurulum ücreti yok. Aylık ücret yok. Sadece satış yaptığınızda küçük bir komisyon.
-          </p>
-          <Link href="/seller" className="inline-block bg-white text-purple-600 px-12 py-5 rounded-xl font-black text-xl hover:bg-yellow-300 hover:text-purple-700 transition-all shadow-2xl hover:scale-105">
-            ÜCRETSİZ MAĞAZA AÇ 🎉
-          </Link>
-          <p className="mt-6 text-sm opacity-75">30 saniyede kayıt olun, 5 dakikada satışa başlayın</p>
+      <section id="paketler" className="py-20 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-5xl font-black mb-6">Paketlerimiz</h2>
+            <p className="text-xl opacity-90">Tek seferlik ödeme, ömür boyu kullanım!</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white/10 backdrop-blur rounded-2xl p-8 border-2 border-white/20">
+              <h3 className="text-2xl font-bold mb-4">Hızlı Başlangıç</h3>
+              <div className="text-5xl font-black mb-6">2,499 TL</div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li>✓ Bedava .vercel.app domain</li>
+                <li>✓ Sınırsız ürün</li>
+                <li>✓ PayTR ödeme sistemi</li>
+                <li>✓ Mobil uyumlu</li>
+                <li>✓ 1 ay destek</li>
+              </ul>
+              <a href="mailto:destek@ai-dukkan.com?subject=Hızlı Başlangıç Paketi" className="block w-full bg-white text-purple-600 py-3 rounded-lg font-bold text-center hover:bg-yellow-300">
+                Hemen Başla
+              </a>
+            </div>
+
+            <div className="bg-white/20 backdrop-blur rounded-2xl p-8 border-4 border-yellow-300 scale-105">
+              <div className="bg-yellow-300 text-purple-900 px-4 py-1 rounded-full text-sm font-bold inline-block mb-4">
+                EN POPÜLER
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Profesyonel</h3>
+              <div className="text-5xl font-black mb-6">4,999 TL</div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li>✓ Özel domain bağlama</li>
+                <li>✓ Sınırsız ürün</li>
+                <li>✓ PayTR ödeme sistemi</li>
+                <li>✓ Logo tasarımı</li>
+                <li>✓ 6 ay destek</li>
+                <li>✓ SEO optimizasyonu</li>
+              </ul>
+              <a href="mailto:destek@ai-dukkan.com?subject=Profesyonel Paket" className="block w-full bg-yellow-300 text-purple-900 py-3 rounded-lg font-bold text-center hover:bg-yellow-400">
+                Hemen Başla
+              </a>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur rounded-2xl p-8 border-2 border-white/20">
+              <h3 className="text-2xl font-bold mb-4">Kurumsal</h3>
+              <div className="text-5xl font-black mb-6">9,999 TL</div>
+              <ul className="space-y-3 mb-8 text-sm">
+                <li>✓ Özel domain + SSL</li>
+                <li>✓ Özel tasarım</li>
+                <li>✓ Kargo entegrasyonu</li>
+                <li>✓ SMS bildirimleri</li>
+                <li>✓ 1 yıl öncelikli destek</li>
+                <li>✓ Gelişmiş raporlar</li>
+              </ul>
+              <a href="mailto:destek@ai-dukkan.com?subject=Kurumsal Paket" className="block w-full bg-white text-purple-600 py-3 rounded-lg font-bold text-center hover:bg-yellow-300">
+                Hemen Başla
+              </a>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="text-xl mb-4">
+              Kredi kartı gerektirmez. Kurulum ücreti yok. Aylık ücret yok.
+            </p>
+            <p className="text-sm opacity-75">Paket seçtikten sonra email ile iletişime geçin, 24 saat içinde siteniz hazır!</p>
+          </div>
         </div>
       </section>
     </div>
