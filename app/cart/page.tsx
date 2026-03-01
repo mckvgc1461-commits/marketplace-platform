@@ -1,20 +1,39 @@
 'use client';
+import { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { Trash2, Plus, Minus } from 'lucide-react';
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity, total, clearCart } = useStore();
+  const { cart, removeFromCart, updateQuantity, total } = useStore();
+  const [showCustomerForm, setShowCustomerForm] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    address: '',
+    city: ''
+  });
 
   const handleCheckout = async () => {
+    if (!customerInfo.name || !customerInfo.phone || !customerInfo.email || !customerInfo.address || !customerInfo.city) {
+      alert('Lütfen tüm bilgileri doldurun!');
+      return;
+    }
+
     const response = await fetch('/api/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: cart })
+      body: JSON.stringify({ 
+        items: cart,
+        customer: customerInfo
+      })
     });
 
-    const { paymentPageUrl } = await response.json();
-    if (paymentPageUrl) {
-      window.location.href = paymentPageUrl;
+    const data = await response.json();
+    if (data.paymentPageUrl) {
+      window.location.href = data.paymentPageUrl;
+    } else {
+      alert('Ödeme hatası: ' + (data.error || 'Bilinmeyen hata'));
     }
   };
 
@@ -80,12 +99,71 @@ export default function CartPage() {
             <span className="text-xl font-bold">Toplam:</span>
             <span className="text-xl font-bold text-blue-600">{total().toFixed(2)} TL</span>
           </div>
-          <button
-            onClick={handleCheckout}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
-          >
-            Ödemeye Geç
-          </button>
+
+          {!showCustomerForm ? (
+            <button
+              onClick={() => setShowCustomerForm(true)}
+              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
+            >
+              Ödemeye Geç
+            </button>
+          ) : (
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold mb-4">Teslimat Bilgileri</h3>
+              <input
+                type="text"
+                placeholder="Ad Soyad"
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                value={customerInfo.name}
+                onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+              />
+              <input
+                type="tel"
+                placeholder="Telefon (Örn: 0532 123 45 67)"
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                value={customerInfo.phone}
+                onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
+              />
+              <input
+                type="email"
+                placeholder="E-posta"
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                value={customerInfo.email}
+                onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
+              />
+              <textarea
+                placeholder="Adres"
+                required
+                rows={3}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                value={customerInfo.address}
+                onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Şehir"
+                required
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                value={customerInfo.city}
+                onChange={(e) => setCustomerInfo({ ...customerInfo, city: e.target.value })}
+              />
+              <button
+                onClick={handleCheckout}
+                className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700"
+              >
+                Kredi Kartı ile Öde
+              </button>
+              <button
+                onClick={() => setShowCustomerForm(false)}
+                className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300"
+              >
+                Geri
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

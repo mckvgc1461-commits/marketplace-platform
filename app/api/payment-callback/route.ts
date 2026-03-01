@@ -1,4 +1,10 @@
 import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://khlremgxaifqxnspaemf.supabase.co',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtobHJlbWd4YWlmcXhuc3BhZW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzOTYzNjgsImV4cCI6MjA4Nzk3MjM2OH0.oO45X8NlXNA77qVD1fm8wZC-y_evl8-l98EcPFHzdd8'
+);
 
 export async function POST(req: Request) {
   try {
@@ -18,15 +24,35 @@ export async function POST(req: Request) {
         locale: 'tr',
         conversationId: Date.now().toString(),
         token 
-      }, (err: any, result: any) => {
+      }, async (err: any, result: any) => {
         if (err || result.status !== 'success') {
-          resolve(NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/cart`));
+          resolve(NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-dukkan.vercel.app'}/cart`));
         } else {
-          resolve(NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/success`));
+          // Ödeme başarılı - Siparişi kaydet
+          try {
+            const orderData = {
+              user_id: result.buyer?.id || 'guest',
+              products: result.basketItems || [],
+              total: parseFloat(result.paidPrice || '0'),
+              status: 'paid',
+              payment_intent_id: result.paymentId,
+              customer_name: result.shippingAddress?.contactName,
+              customer_phone: result.buyer?.gsmNumber,
+              customer_email: result.buyer?.email,
+              customer_address: result.shippingAddress?.address,
+              customer_city: result.shippingAddress?.city
+            };
+
+            await supabase.from('orders').insert([orderData]);
+          } catch (dbError) {
+            console.error('Database error:', dbError);
+          }
+
+          resolve(NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-dukkan.vercel.app'}/success`));
         }
       });
     });
   } catch (error) {
-    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/cart`);
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-dukkan.vercel.app'}/cart`);
   }
 }

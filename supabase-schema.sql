@@ -11,6 +11,9 @@ CREATE TABLE products (
   category TEXT NOT NULL,
   stock INTEGER DEFAULT 0,
   seller_id TEXT NOT NULL,
+  seller_name TEXT,
+  seller_phone TEXT,
+  seller_email TEXT,
   status TEXT DEFAULT 'active',
   created_at TIMESTAMP DEFAULT NOW()
 );
@@ -23,6 +26,11 @@ CREATE TABLE orders (
   total DECIMAL(10,2) NOT NULL,
   status TEXT DEFAULT 'pending',
   payment_intent_id TEXT,
+  customer_name TEXT,
+  customer_phone TEXT,
+  customer_email TEXT,
+  customer_address TEXT,
+  customer_city TEXT,
   created_at TIMESTAMP DEFAULT NOW()
 );
 

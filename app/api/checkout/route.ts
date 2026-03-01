@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const { items } = await req.json();
+    const { items, customer } = await req.json();
     
     const Iyzipay = require('iyzipay');
     
@@ -16,6 +16,10 @@ export async function POST(req: Request) {
       sum + (item.price * item.quantity), 0
     );
 
+    // Telefonu temizle ve formatla
+    const cleanPhone = customer.phone.replace(/\D/g, '');
+    const formattedPhone = cleanPhone.startsWith('0') ? '+9' + cleanPhone : '+90' + cleanPhone;
+
     const request = {
       locale: 'tr',
       conversationId: Date.now().toString(),
@@ -24,39 +28,39 @@ export async function POST(req: Request) {
       currency: 'TRY',
       basketId: Date.now().toString(),
       paymentGroup: 'PRODUCT',
-      callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/api/payment-callback`,
+      callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-dukkan.vercel.app'}/api/payment-callback`,
       enabledInstallments: [1, 2, 3, 6, 9],
       buyer: {
         id: 'BY' + Date.now(),
-        name: 'Müşteri',
-        surname: 'Adı',
-        gsmNumber: '+905350000000',
-        email: 'musteri@email.com',
+        name: customer.name.split(' ')[0] || 'Müşteri',
+        surname: customer.name.split(' ').slice(1).join(' ') || 'Adı',
+        gsmNumber: formattedPhone,
+        email: customer.email,
         identityNumber: '11111111111',
-        registrationAddress: 'Adres',
+        registrationAddress: customer.address,
         ip: req.headers.get('x-forwarded-for') || '85.34.78.112',
-        city: 'Istanbul',
+        city: customer.city,
         country: 'Turkey',
-        zipCode: '34732'
+        zipCode: '34000'
       },
       shippingAddress: {
-        contactName: 'Müşteri Adı',
-        city: 'Istanbul',
+        contactName: customer.name,
+        city: customer.city,
         country: 'Turkey',
-        address: 'Adres',
-        zipCode: '34732'
+        address: customer.address,
+        zipCode: '34000'
       },
       billingAddress: {
-        contactName: 'Müşteri Adı',
-        city: 'Istanbul',
+        contactName: customer.name,
+        city: customer.city,
         country: 'Turkey',
-        address: 'Adres',
-        zipCode: '34732'
+        address: customer.address,
+        zipCode: '34000'
       },
       basketItems: items.map((item: any) => ({
         id: item.id,
         name: item.title.substring(0, 50),
-        category1: 'Genel',
+        category1: item.category || 'Genel',
         itemType: 'PHYSICAL',
         price: (item.price * item.quantity).toFixed(2)
       }))
@@ -70,7 +74,8 @@ export async function POST(req: Request) {
         } else if (result.status === 'success') {
           resolve(NextResponse.json({ 
             paymentPageUrl: result.paymentPageUrl,
-            token: result.token 
+            token: result.token,
+            conversationId: request.conversationId
           }));
         } else {
           console.error('Iyzico Result Error:', result);

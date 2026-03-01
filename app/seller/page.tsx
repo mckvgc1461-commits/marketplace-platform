@@ -10,7 +10,10 @@ export default function SellerPanel() {
     price: '',
     category: 'Elektronik',
     stock: '1',
-    images: [] as string[]
+    images: [] as string[],
+    seller_name: '',
+    seller_phone: '',
+    seller_email: ''
   });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,20 +37,35 @@ export default function SellerPanel() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const { data, error } = await supabase.from('products').insert([{
+    const { error } = await supabase.from('products').insert([{
       title: form.title,
       description: form.description,
       price: parseFloat(form.price),
       category: form.category,
       stock: parseInt(form.stock),
       images: form.images,
+      seller_name: form.seller_name,
+      seller_phone: form.seller_phone,
+      seller_email: form.seller_email,
       status: 'active',
-      seller_id: 'demo-seller' // Gerçek sistemde auth'dan gelecek
+      seller_id: form.seller_email // Email'i ID olarak kullan
     }]);
 
     if (!error) {
       alert('Ürün başarıyla eklendi!');
-      setForm({ title: '', description: '', price: '', category: 'Elektronik', stock: '1', images: [] });
+      setForm({ 
+        title: '', 
+        description: '', 
+        price: '', 
+        category: 'Elektronik', 
+        stock: '1', 
+        images: [],
+        seller_name: '',
+        seller_phone: '',
+        seller_email: ''
+      });
+    } else {
+      alert('Hata: ' + error.message);
     }
   };
 
@@ -63,6 +81,45 @@ export default function SellerPanel() {
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="bg-purple-50 p-6 rounded-lg mb-6">
+              <h2 className="text-xl font-bold mb-4 text-purple-900">Satıcı Bilgileri</h2>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Adınız Soyadınız</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                    value={form.seller_name}
+                    onChange={(e) => setForm({ ...form, seller_name: e.target.value })}
+                    placeholder="Örn: Ahmet Yılmaz"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Telefon</label>
+                  <input
+                    type="tel"
+                    required
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                    value={form.seller_phone}
+                    onChange={(e) => setForm({ ...form, seller_phone: e.target.value })}
+                    placeholder="Örn: 0532 123 45 67"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">E-posta</label>
+                  <input
+                    type="email"
+                    required
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                    value={form.seller_email}
+                    onChange={(e) => setForm({ ...form, seller_email: e.target.value })}
+                    placeholder="Örn: ahmet@email.com"
+                  />
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium mb-2">Ürün Başlığı</label>
               <input

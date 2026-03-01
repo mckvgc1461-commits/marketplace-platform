@@ -7,17 +7,11 @@ export interface Product {
   category: string;
   stock: number;
   seller_id: string;
+  seller_name?: string;
+  seller_phone?: string;
+  seller_email?: string;
   created_at: string;
   status: 'active' | 'sold' | 'draft';
-}
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'customer' | 'seller' | 'admin';
-  phone?: string;
-  address?: string;
 }
 
 export interface Order {
@@ -27,5 +21,10 @@ export interface Order {
   total: number;
   status: 'pending' | 'paid' | 'shipped' | 'delivered';
   payment_intent_id?: string;
+  customer_name?: string;
+  customer_phone?: string;
+  customer_email?: string;
+  customer_address?: string;
+  customer_city?: string;
   created_at: string;
 }
