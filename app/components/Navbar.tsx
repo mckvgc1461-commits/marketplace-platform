@@ -41,6 +41,13 @@ export default function Navbar() {
 
           <div className="flex items-center gap-6">
             <Link 
+              href="/musteri" 
+              className="hidden md:flex items-center gap-2 bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2.5 rounded-full font-bold hover:from-green-700 hover:to-blue-700 transition-all hover:scale-105 shadow-lg"
+            >
+              <Sparkles size={18} />
+              Site Kur
+            </Link>
+            <Link 
               href="/seller" 
               className="hidden md:flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2.5 rounded-full font-bold hover:from-purple-700 hover:to-pink-700 transition-all hover:scale-105 shadow-lg"
             >
