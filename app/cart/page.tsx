@@ -20,21 +20,43 @@ export default function CartPage() {
       return;
     }
 
-    const response = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        items: cart,
-        customer: customerInfo
-      })
+    // Şimdilik basit ödeme sayfasına yönlendir
+    // Gerçek Iyzico entegrasyonu için API anahtarları gerekli
+    const params = new URLSearchParams({
+      total: total().toString(),
+      name: customerInfo.name,
+      phone: customerInfo.phone,
+      email: customerInfo.email,
+      address: customerInfo.address,
+      city: customerInfo.city
     });
+    
+    window.location.href = `/payment?${params.toString()}`;
 
-    const data = await response.json();
-    if (data.paymentPageUrl) {
-      window.location.href = data.paymentPageUrl;
-    } else {
-      alert('Ödeme hatası: ' + (data.error || 'Bilinmeyen hata'));
+    /* İyzico entegrasyonu için:
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          items: cart,
+          customer: customerInfo
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.paymentPageUrl) {
+        window.location.href = data.paymentPageUrl;
+      } else {
+        console.error('Ödeme hatası:', data);
+        alert('Ödeme hatası: ' + (data.error || data.errorMessage || data.message || 'Bilinmeyen hata'));
+      }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      alert('Bağlantı hatası. Lütfen tekrar deneyin.');
     }
+    */
   };
 
   if (cart.length === 0) {

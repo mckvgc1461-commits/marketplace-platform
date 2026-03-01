@@ -4,17 +4,29 @@ export async function POST(req: Request) {
   try {
     const { items, customer } = await req.json();
     
-    const Iyzipay = require('iyzipay');
-    
-    const iyzipay = new Iyzipay({
-      apiKey: process.env.IYZICO_API_KEY || 'sandbox-your-api-key',
-      secretKey: process.env.IYZICO_SECRET_KEY || 'sandbox-your-secret-key',
-      uri: 'https://sandbox-api.iyzipay.com'
-    });
+    if (!items || items.length === 0) {
+      return NextResponse.json({ error: 'Sepet boş' }, { status: 400 });
+    }
+
+    if (!customer || !customer.name || !customer.phone || !customer.email) {
+      return NextResponse.json({ error: 'Müşteri bilgileri eksik' }, { status: 400 });
+    }
 
     const total = items.reduce((sum: number, item: any) => 
       sum + (item.price * item.quantity), 0
     );
+
+    // Şimdilik basit bir ödeme sayfası oluştur
+    // Gerçek Iyzico entegrasyonu için API anahtarları gerekli
+    
+    const Iyzipay = require('iyzipay');
+    
+    // İyzico Public Sandbox Anahtarları (Test için)
+    const iyzipay = new Iyzipay({
+      apiKey: 'sandbox-gqJbhGLj6xGJzKxxxxxxxxxxxxxQ',
+      secretKey: 'sandbox-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      uri: 'https://sandbox-api.iyzipay.com'
+    });
 
     // Telefonu temizle ve formatla
     const cleanPhone = customer.phone.replace(/\D/g, '');
@@ -66,11 +78,19 @@ export async function POST(req: Request) {
       }))
     };
 
+    console.log('Iyzico Request:', JSON.stringify(request, null, 2));
+
     return new Promise((resolve) => {
       iyzipay.checkoutFormInitialize.create(request, (err: any, result: any) => {
+        console.log('Iyzico Response:', { err, result });
+        
         if (err) {
           console.error('Iyzico Error:', err);
-          resolve(NextResponse.json({ error: 'Ödeme hatası', details: err }, { status: 500 }));
+          resolve(NextResponse.json({ 
+            error: 'Ödeme hatası', 
+            details: err,
+            message: 'İyzico API anahtarları geçersiz. Lütfen gerçek API anahtarlarını ekleyin.'
+          }, { status: 500 }));
         } else if (result.status === 'success') {
           resolve(NextResponse.json({ 
             paymentPageUrl: result.paymentPageUrl,
@@ -79,12 +99,19 @@ export async function POST(req: Request) {
           }));
         } else {
           console.error('Iyzico Result Error:', result);
-          resolve(NextResponse.json({ error: 'Ödeme başlatılamadı', details: result }, { status: 500 }));
+          resolve(NextResponse.json({ 
+            error: 'Ödeme başlatılamadı', 
+            details: result,
+            errorMessage: result.errorMessage || 'Bilinmeyen hata'
+          }, { status: 500 }));
         }
       });
     });
   } catch (error: any) {
     console.error('Checkout Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ 
+      error: error.message,
+      stack: error.stack 
+    }, { status: 500 });
   }
 }
