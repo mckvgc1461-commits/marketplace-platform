@@ -6,6 +6,7 @@ import { Trash2, Plus, Minus } from 'lucide-react';
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, total } = useStore();
   const [showCustomerForm, setShowCustomerForm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
     name: '',
     phone: '',
@@ -20,22 +21,10 @@ export default function CartPage() {
       return;
     }
 
-    // Şimdilik basit ödeme sayfasına yönlendir
-    // Gerçek Iyzico entegrasyonu için API anahtarları gerekli
-    const params = new URLSearchParams({
-      total: total().toString(),
-      name: customerInfo.name,
-      phone: customerInfo.phone,
-      email: customerInfo.email,
-      address: customerInfo.address,
-      city: customerInfo.city
-    });
-    
-    window.location.href = `/payment?${params.toString()}`;
+    setLoading(true);
 
-    /* İyzico entegrasyonu için:
     try {
-      const response = await fetch('/api/checkout', {
+      const response = await fetch('/api/paytr-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -46,17 +35,18 @@ export default function CartPage() {
 
       const data = await response.json();
       
-      if (response.ok && data.paymentPageUrl) {
-        window.location.href = data.paymentPageUrl;
+      if (response.ok && data.paymentUrl) {
+        window.location.href = data.paymentUrl;
       } else {
         console.error('Ödeme hatası:', data);
-        alert('Ödeme hatası: ' + (data.error || data.errorMessage || data.message || 'Bilinmeyen hata'));
+        alert('Ödeme hatası: ' + (data.error || data.reason || 'Bilinmeyen hata'));
+        setLoading(false);
       }
     } catch (error) {
       console.error('Fetch error:', error);
       alert('Bağlantı hatası. Lütfen tekrar deneyin.');
+      setLoading(false);
     }
-    */
   };
 
   if (cart.length === 0) {
@@ -174,9 +164,17 @@ export default function CartPage() {
               />
               <button
                 onClick={handleCheckout}
-                className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700"
+                disabled={loading}
+                className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Kredi Kartı ile Öde
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Yükleniyor...
+                  </>
+                ) : (
+                  'Kredi Kartı ile Öde'
+                )}
               </button>
               <button
                 onClick={() => setShowCustomerForm(false)}
