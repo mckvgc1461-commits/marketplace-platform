@@ -1,0 +1,17 @@
+VERCEL ENVIRONMENT VARIABLES
+============================
+
+1. NEXT_PUBLIC_SUPABASE_URL
+https://dcnhmatuqazltqhqsfgu.supabase.co
+
+2. NEXT_PUBLIC_SUPABASE_ANON_KEY
+sb_publishable_VuyUnNdtMRj9IHxOW7Cq6g_wuTWQJq8
+
+3. IYZICO_API_KEY
+sandbox-test
+
+4. IYZICO_SECRET_KEY
+sandbox-test
+
+5. NEXT_PUBLIC_SITE_URL
+https://ai-dukkan-9l9iox1qs-eticaret6-projects.vercel.app
