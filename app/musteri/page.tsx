@@ -133,16 +133,16 @@ export default function MusteriPage() {
                 ))}
               </ul>
 
-              <button
-                onClick={() => setSelectedPackage(pkg.id)}
-                className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
+              <a
+                href="/auth/kayit"
+                className={`block w-full py-4 rounded-xl font-bold text-lg transition-all text-center ${
                   pkg.popular
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-2xl'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Hemen Başla
-              </button>
+              </a>
             </div>
           ))}
         </div>
@@ -165,9 +165,9 @@ export default function MusteriPage() {
           <div className="text-2xl font-bold mb-6">
             8,265 TL TASARRUF! 🎉
           </div>
-          <button className="bg-white text-blue-600 px-12 py-4 rounded-xl font-bold text-xl hover:shadow-2xl transition-all">
+          <a href="/auth/kayit" className="inline-block bg-white text-blue-600 px-12 py-4 rounded-xl font-bold text-xl hover:shadow-2xl transition-all">
             Şimdi Başla ve Tasarruf Et
-          </button>
+          </a>
         </div>
       </div>
     </div>
