@@ -44,12 +44,12 @@ export default function HomePage() {
             Hosting, domain, ödeme sistemi - HER ŞEY HAZIR! Sadece ürünlerinizi ekleyin ve satışa başlayın.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/seller" className="bg-white text-purple-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 hover:text-purple-700 transition-all shadow-2xl hover:scale-105">
-              ÜCRETSİZ BAŞLA 🚀
+            <Link href="/musteri" className="bg-white text-purple-600 px-10 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 hover:text-purple-700 transition-all shadow-2xl hover:scale-105">
+              KENDİ SİTENİ KUR 🚀
             </Link>
-            <button className="bg-white/10 backdrop-blur-sm border-2 border-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
-              Demo İzle
-            </button>
+            <Link href="/seller" className="bg-white/10 backdrop-blur-sm border-2 border-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all">
+              ÜRÜN SAT
+            </Link>
           </div>
           <div className="mt-8 flex gap-8 justify-center text-sm">
             <div className="flex items-center gap-2">
