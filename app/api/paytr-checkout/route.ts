@@ -11,14 +11,16 @@ export async function POST(req: Request) {
   try {
     const { package: packageType, amount, customer } = await req.json();
 
-    // GERÇEK PayTR API bilgileri - .env dosyasından MUTLAKA alınmalı
-    const merchant_id = process.env.PAYTR_MERCHANT_ID || '999999'; // Test için geçici
-    const merchant_key = process.env.PAYTR_MERCHANT_KEY || 'test_key'; // Test için geçici
-    const merchant_salt = process.env.PAYTR_MERCHANT_SALT || 'test_salt'; // Test için geçici
+    // PayTR API bilgileri - Render environment variables'dan alınır
+    const merchant_id = process.env.PAYTR_MERCHANT_ID;
+    const merchant_key = process.env.PAYTR_MERCHANT_KEY;
+    const merchant_salt = process.env.PAYTR_MERCHANT_SALT;
 
-    // API bilgileri yoksa uyarı ver ama devam et (test modu için)
+    // API bilgileri yoksa hata ver
     if (!merchant_id || !merchant_key || !merchant_salt) {
-      console.warn('PayTR API bilgileri eksik - test modu aktif');
+      return NextResponse.json({ 
+        error: 'PayTR API bilgileri eksik. Lütfen Render environment variables ekleyin: PAYTR_MERCHANT_ID, PAYTR_MERCHANT_KEY, PAYTR_MERCHANT_SALT' 
+      }, { status: 500 });
     }
     
     const merchant_oid = 'SAAS_' + Date.now();
@@ -38,7 +40,7 @@ export async function POST(req: Request) {
     const user_ip = req.headers.get('x-forwarded-for')?.split(',')[0] || req.headers.get('x-real-ip') || '127.0.0.1';
     const timeout_limit = '30';
     const debug_on = '0'; // Debug kapalı
-    const test_mode = '1'; // TEST MODU - Gerçek para çekilmez!
+    const test_mode = '0'; // TAM SÜRÜM - Gerçek para çekilir!
     const no_installment = '0';
     const max_installment = '9'; // 9 taksit
     const currency = 'TL';

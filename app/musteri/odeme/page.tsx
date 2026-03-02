@@ -91,14 +91,14 @@ function OdemeContent() {
           </div>
 
           <form onSubmit={handlePayment} className="p-8 space-y-6">
-            {/* GERÇEK ÖDEME UYARISI */}
-            <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-300 rounded-xl p-4">
+            {/* TAM SÜRÜM UYARISI */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-4">
               <div className="flex items-start gap-3">
-                <div className="text-3xl">⚠️</div>
+                <div className="text-3xl">✅</div>
                 <div>
-                  <div className="font-bold text-red-900 text-lg mb-1">GERÇEK ÖDEME UYARISI</div>
-                  <div className="text-red-800 text-sm">
-                    Bu sistem test modu değildir. Girdiğiniz kredi kartından <span className="font-bold">{pkg.price.toLocaleString('tr-TR')} TL</span> gerçekten çekilecektir!
+                  <div className="font-bold text-green-900 text-lg mb-1">TAM SÜRÜM - GERÇEK ÖDEME</div>
+                  <div className="text-green-800 text-sm">
+                    Girdiğiniz kredi kartından <span className="font-bold">{pkg.price.toLocaleString('tr-TR')} TL</span> gerçekten çekilecektir. Ödeme sonrası siteniz anında aktif olacak!
                   </div>
                 </div>
               </div>
