@@ -6,11 +6,15 @@ services:
     plan: free
     buildCommand: rm -rf .next && npm install && npm run build
     startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
     envVars:
       - key: NODE_VERSION
         value: 20
       - key: NODE_ENV
         value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=512
       - key: NEXT_PUBLIC_SUPABASE_URL
         value: https://khlremgxaifqxnspaemf.supabase.co
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
