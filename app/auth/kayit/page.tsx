@@ -54,7 +54,7 @@ export default function KayitPage() {
         }]);
 
         // Ödeme sayfasına yönlendir
-        router.push('/musteri/odeme?subdomain=' + uniqueSubdomain);
+        router.push('/dashboard');
         return;
       }
 
@@ -73,8 +73,8 @@ export default function KayitPage() {
 
       if (storeError) throw storeError;
 
-      // 4. Ödeme sayfasına yönlendir
-      router.push('/musteri/odeme?subdomain=' + uniqueSubdomain);
+      // 4. Dashboard'a yönlendir
+      router.push('/dashboard');
 
     } catch (err: any) {
       setError(err.message || 'Kayıt başarısız');
