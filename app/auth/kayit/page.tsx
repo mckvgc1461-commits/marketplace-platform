@@ -44,13 +44,14 @@ export default function KayitPage() {
         // Geçici user ID oluştur
         const tempUserId = 'temp_' + Date.now();
         
-        // Store oluştur
+        // Store oluştur - Direkt aktif
         await supabase.from('stores').insert([{
           owner_id: tempUserId,
           store_name: form.storeName,
           subdomain: uniqueSubdomain,
           contact_email: form.email,
-          status: 'pending'
+          status: 'active', // Direkt aktif
+          plan: 'professional' // Varsayılan plan
         }]);
 
         // Ödeme sayfasına yönlendir
@@ -60,7 +61,7 @@ export default function KayitPage() {
 
       if (authError) throw authError;
 
-      // 3. Mağaza oluştur
+      // 3. Mağaza oluştur - Direkt aktif
       const { error: storeError } = await supabase
         .from('stores')
         .insert([{
@@ -68,7 +69,8 @@ export default function KayitPage() {
           store_name: form.storeName,
           subdomain: uniqueSubdomain,
           contact_email: form.email,
-          status: 'pending'
+          status: 'active', // Direkt aktif
+          plan: 'professional' // Varsayılan plan
         }]);
 
       if (storeError) throw storeError;

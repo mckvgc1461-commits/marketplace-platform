@@ -115,21 +115,6 @@ export default function DashboardPage() {
               </span>
             </div>
           </div>
-
-          {store?.status === 'pending' && (
-            <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-yellow-800 font-semibold mb-2">Ödeme Bekleniyor</p>
-              <p className="text-yellow-700 text-sm mb-4">
-                Sitenizi aktifleştirmek için ödeme yapmanız gerekiyor.
-              </p>
-              <a
-                href="/musteri/odeme"
-                className="inline-block bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700"
-              >
-                Ödeme Yap
-              </a>
-            </div>
-          )}
         </div>
       </div>
     </div>

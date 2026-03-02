@@ -36,8 +36,8 @@ export default function HomePage() {
             <Link href="/store/demo" className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-16 py-5 rounded-2xl font-black text-2xl hover:shadow-2xl hover:scale-105 transition-all">
               🎬 DEMO GÖSTER
             </Link>
-            <Link href="/musteri" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-16 py-5 rounded-2xl font-black text-2xl hover:shadow-2xl hover:scale-105 transition-all">
-              Paketleri Gör 🎯
+            <Link href="/auth/kayit" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-16 py-5 rounded-2xl font-black text-2xl hover:shadow-2xl hover:scale-105 transition-all">
+              Hemen Başla 🚀
             </Link>
             <Link href="/auth/giris" className="bg-white border-4 border-gray-300 text-gray-700 px-16 py-5 rounded-2xl font-black text-2xl hover:border-blue-600 hover:shadow-xl transition-all">
               Giriş Yap
