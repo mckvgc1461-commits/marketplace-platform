@@ -35,7 +35,31 @@ export default function KayitPage() {
         }
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        // Rate limit hatası varsa, direkt giriş yap
+        if (authError.message.includes('rate limit')) {
+          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+            email: form.email,
+            password: form.password,
+          });
+          
+          if (signInError) throw new Error('Bu email zaten kayıtlı. Giriş sayfasından giriş yapın.');
+          
+          // Mevcut store'u bul
+          const { data: existingStore } = await supabase
+            .from('stores')
+            .select('subdomain')
+            .eq('owner_id', signInData.user?.id)
+            .single();
+          
+          if (existingStore) {
+            router.push('/musteri/odeme?subdomain=' + existingStore.subdomain);
+            return;
+          }
+        } else {
+          throw authError;
+        }
+      }
 
       // 2. Mağaza oluştur
       const { error: storeError } = await supabase
