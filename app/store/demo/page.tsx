@@ -84,7 +84,12 @@ export default function DemoStorePage() {
         <div className="fixed top-24 right-4 bg-white rounded-2xl shadow-2xl p-6 z-50 w-96 border-4 border-green-500">
           <div className="flex items-center gap-2 text-green-600 mb-4">
             <ShoppingCart size={24} />
-            <span className="font-bold text-lg">Sepete Eklendi!</span>
+            <span className="font-bold text-lg">Demo Sepet</span>
+          </div>
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+            <p className="text-sm text-yellow-800">
+              🎬 Bu bir demo sitedir. Gerçek ödeme yapılmaz.
+            </p>
           </div>
           <div className="space-y-2">
             {cart.slice(-3).map((item, i) => (
@@ -95,10 +100,13 @@ export default function DemoStorePage() {
             ))}
           </div>
           <div className="mt-4 pt-4 border-t">
-            <div className="flex justify-between font-bold text-lg">
+            <div className="flex justify-between font-bold text-lg mb-4">
               <span>Toplam:</span>
               <span className="text-blue-600">{totalPrice} TL</span>
             </div>
+            <Link href="/musteri" className="block bg-gradient-to-r from-green-600 to-emerald-600 text-white text-center py-3 rounded-xl font-bold hover:shadow-lg">
+              Kendi Sitenizi Açın
+            </Link>
           </div>
         </div>
       )}
@@ -158,8 +166,11 @@ export default function DemoStorePage() {
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-bold hover:shadow-lg transition-all flex items-center justify-center gap-2"
               >
                 <ShoppingCart size={20} />
-                Sepete Ekle
+                Demo Sepete Ekle
               </button>
+              <div className="mt-2 text-xs text-center text-gray-500">
+                🎬 Demo - Gerçek ödeme yok
+              </div>
             </div>
           ))}
         </div>
