@@ -2,6 +2,10 @@
 import { Rocket, Check, Zap, Shield, Globe, TrendingUp, Store, Sparkles, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
