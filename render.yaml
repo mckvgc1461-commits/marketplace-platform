@@ -1,13 +1,19 @@
 services:
   - type: web
-    name: ai-dukkan
+    name: marketplace-platform
     env: node
-    buildCommand: npm install && npm run build
+    region: frankfurt
+    plan: free
+    buildCommand: rm -rf .next && npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
-        value: 18
+        value: 20
+      - key: NODE_ENV
+        value: production
       - key: NEXT_PUBLIC_SUPABASE_URL
         value: https://khlremgxaifqxnspaemf.supabase.co
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
         value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtobHJlbWd4YWlmcXhuc3BhZW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzOTYzNjgsImV4cCI6MjA4Nzk3MjM2OH0.oO45X8NlXNA77qVD1fm8wZC-y_evl8-l98EcPFHzdd8
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://marketplace-platform-saz4.onrender.com
