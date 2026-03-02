@@ -54,7 +54,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2">
             <Store className="text-blue-600" size={32} />
             <div>
-              <div className="font-bold text-lg">{store?.store_name}</div>
+              <div className="font-bold text-lg">{store?.name}</div>
               <div className="text-sm text-gray-500">{store?.subdomain}.ai-dukkan.com</div>
             </div>
           </div>
@@ -94,7 +94,7 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Mağaza Adı</label>
-              <div className="text-lg">{store?.store_name}</div>
+              <div className="text-lg">{store?.name}</div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Site Adresi</label>

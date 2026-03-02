@@ -29,18 +29,32 @@ function OdemeContent() {
 
     try {
       const formData = new FormData(e.target as HTMLFormElement);
-      formData.append('package', selectedPackage);
-      formData.append('amount', packages[selectedPackage as keyof typeof packages].price.toString());
+      
+      const paymentData = {
+        package: selectedPackage,
+        amount: packages[selectedPackage as keyof typeof packages].price,
+        customer: {
+          name: formData.get('name'),
+          email: formData.get('email'),
+          phone: formData.get('phone'),
+          address: formData.get('address'),
+          city: formData.get('city'),
+          country: formData.get('country')
+        }
+      };
 
       const response = await fetch('/api/paytr-checkout', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(paymentData)
       });
 
       const data = await response.json();
 
-      if (data.iframeToken) {
-        window.location.href = `https://www.paytr.com/odeme/guvenli/${data.iframeToken}`;
+      if (data.token) {
+        window.location.href = `https://www.paytr.com/odeme/guvenli/${data.token}`;
       } else {
         alert('Ödeme başlatılamadı: ' + (data.error || 'Bilinmeyen hata'));
       }

@@ -1,34 +1,36 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://khlremgxaifqxnspaemf.supabase.co',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtobHJlbWd4YWlmcXhuc3BhZW1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzOTYzNjgsImV4cCI6MjA4Nzk3MjM2OH0.oO45X8NlXNA77qVD1fm8wZC-y_evl8-l98EcPFHzdd8'
+);
 
 export async function POST(req: Request) {
   try {
-    const { items, customer } = await req.json();
-    
-    const total = items.reduce((sum: number, item: any) => 
-      sum + (item.price * item.quantity), 0
-    );
+    const { package: packageType, amount, customer } = await req.json();
 
     // PayTR API bilgileri
-    const merchant_id = process.env.PAYTR_MERCHANT_ID || 'MERCHANT_ID';
+    const merchant_id = process.env.PAYTR_MERCHANT_ID || '999999';
     const merchant_key = process.env.PAYTR_MERCHANT_KEY || 'MERCHANT_KEY';
     const merchant_salt = process.env.PAYTR_MERCHANT_SALT || 'MERCHANT_SALT';
     
-    const merchant_oid = 'ORDER_' + Date.now();
+    const merchant_oid = 'SAAS_' + Date.now();
     const email = customer.email;
-    const payment_amount = Math.round(total * 100); // Kuruş cinsinden
-    const user_basket = JSON.stringify(items.map((item: any) => [
-      item.title,
-      item.price.toFixed(2),
-      item.quantity
-    ]));
+    const payment_amount = Math.round(amount * 100); // Kuruş cinsinden
+    
+    // Sepet bilgisi
+    const user_basket = JSON.stringify([
+      [`E-Ticaret Sitesi - ${packageType}`, amount.toFixed(2), 1]
+    ]);
     
     const user_name = customer.name;
     const user_address = customer.address;
     const user_phone = customer.phone;
-    const merchant_ok_url = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-dukkan.vercel.app'}/success`;
-    const merchant_fail_url = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://ai-dukkan.vercel.app'}/cart`;
-    const user_ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    const merchant_ok_url = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://marketplace-platform-saz4.onrender.com'}/success`;
+    const merchant_fail_url = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://marketplace-platform-saz4.onrender.com'}/musteri/odeme`;
+    const user_ip = req.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
     const timeout_limit = '30';
     const debug_on = '1';
     const test_mode = '1'; // Test modu
@@ -77,9 +79,23 @@ export async function POST(req: Request) {
     const result = await response.json();
 
     if (result.status === 'success') {
+      // Veritabanına pending store kaydı oluştur
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const subdomain = customer.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+        
+        await supabase.from('stores').insert({
+          owner_id: user.id,
+          name: `${customer.name} Mağazası`,
+          subdomain: subdomain,
+          plan: packageType,
+          status: 'pending'
+        });
+      }
+
       return NextResponse.json({
-        token: result.token,
-        paymentUrl: `https://www.paytr.com/odeme/guvenli/${result.token}`
+        token: result.token
       });
     } else {
       return NextResponse.json({ 

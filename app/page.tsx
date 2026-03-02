@@ -15,7 +15,7 @@ export default function HomePage() {
               <span className="font-semibold">5 Dakikada Hazır!</span>
             </div>
             <h1 className="text-6xl md:text-7xl font-black mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              E-Ticaret Siteniz<br />Anında Hazır!
+              E-Ticaret Siteniz<br />Anında Hazır! v2.0
             </h1>
             <p className="text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Tek seferlik ödeme, ömür boyu kullanım. Aylık ücret yok!
