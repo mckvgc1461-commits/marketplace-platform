@@ -18,6 +18,7 @@ export default function DashboardPage() {
     stock: '',
     image_url: ''
   });
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -72,6 +73,38 @@ export default function DashboardPage() {
       setShowAddProduct(false);
       setNewProduct({ name: '', price: '', description: '', stock: '', image_url: '' });
       checkUser(); // Yenile
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    
+    try {
+      // Dosya adını benzersiz yap
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${store.id}/${fileName}`;
+
+      // Supabase Storage'a yükle
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Public URL al
+      const { data } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
+
+      setNewProduct({ ...newProduct, image_url: data.publicUrl });
+    } catch (error) {
+      alert('Resim yüklenemedi');
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -185,14 +218,18 @@ export default function DashboardPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Resim URL</label>
+                  <label className="block text-sm font-medium mb-2">Ürün Resmi</label>
                   <input
-                    type="url"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
                     className="w-full px-4 py-2 border rounded-lg"
-                    placeholder="https://..."
-                    value={newProduct.image_url}
-                    onChange={(e) => setNewProduct({...newProduct, image_url: e.target.value})}
+                    disabled={uploadingImage}
                   />
+                  {uploadingImage && <p className="text-sm text-blue-600 mt-1">Yükleniyor...</p>}
+                  {newProduct.image_url && (
+                    <img src={newProduct.image_url} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
+                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium mb-2">Açıklama</label>
