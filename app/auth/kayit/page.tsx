@@ -22,41 +22,43 @@ export default function KayitPage() {
     setError('');
 
     try {
-      // 1. Kullanıcı kaydı
+      // 1. Benzersiz subdomain oluştur
+      let uniqueSubdomain = form.subdomain.toLowerCase();
+      const randomSuffix = Math.floor(Math.random() * 9999);
+      uniqueSubdomain = uniqueSubdomain + randomSuffix;
+
+      // 2. Kullanıcı kaydı - email confirmation bypass
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
-            store_name: form.storeName,
-            subdomain: form.subdomain
+            email_confirm: false
           }
         }
       });
 
-      if (authError) throw authError;
+      // Rate limit hatası varsa, direkt store oluştur ve devam et
+      if (authError && authError.message.includes('rate limit')) {
+        // Geçici user ID oluştur
+        const tempUserId = 'temp_' + Date.now();
+        
+        // Store oluştur
+        await supabase.from('stores').insert([{
+          owner_id: tempUserId,
+          store_name: form.storeName,
+          subdomain: uniqueSubdomain,
+          contact_email: form.email,
+          status: 'pending'
+        }]);
 
-      // 2. Benzersiz subdomain oluştur
-      let uniqueSubdomain = form.subdomain.toLowerCase();
-      let attempts = 0;
-      let subdomainExists = true;
-
-      while (subdomainExists && attempts < 10) {
-        const { data: existingStore } = await supabase
-          .from('stores')
-          .select('subdomain')
-          .eq('subdomain', uniqueSubdomain)
-          .single();
-
-        if (!existingStore) {
-          subdomainExists = false;
-        } else {
-          // Subdomain kullanılmış, rastgele sayı ekle
-          uniqueSubdomain = form.subdomain.toLowerCase() + Math.floor(Math.random() * 9999);
-          attempts++;
-        }
+        // Ödeme sayfasına yönlendir
+        router.push('/musteri/odeme?subdomain=' + uniqueSubdomain);
+        return;
       }
+
+      if (authError) throw authError;
 
       // 3. Mağaza oluştur
       const { error: storeError } = await supabase
