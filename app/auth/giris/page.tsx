@@ -25,7 +25,11 @@ export default function GirisPage() {
       if (error) throw error;
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.message || 'Giriş başarısız');
+      if (err.message.includes('Invalid login')) {
+        setError('Email veya şifre hatalı. Kayıt olmadıysanız önce kayıt olun.');
+      } else {
+        setError(err.message || 'Giriş başarısız');
+      }
     } finally {
       setLoading(false);
     }
