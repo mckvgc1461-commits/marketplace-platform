@@ -33,6 +33,9 @@ export default function HomePage() {
           </p>
           
           <div className="flex gap-6 justify-center flex-wrap mb-16">
+            <Link href="/store/demo" className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-16 py-5 rounded-2xl font-black text-2xl hover:shadow-2xl hover:scale-105 transition-all">
+              🎬 DEMO GÖSTER
+            </Link>
             <Link href="/musteri" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-16 py-5 rounded-2xl font-black text-2xl hover:shadow-2xl hover:scale-105 transition-all">
               Paketleri Gör 🎯
             </Link>

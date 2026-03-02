@@ -26,6 +26,13 @@ export default function KayitPage() {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+          data: {
+            store_name: form.storeName,
+            subdomain: form.subdomain
+          }
+        }
       });
 
       if (authError) throw authError;
