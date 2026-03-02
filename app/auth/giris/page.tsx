@@ -46,7 +46,7 @@ export default function GirisPage() {
               <div className="relative">
                 <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
                 <input
-                  type="email"
+                  type="text"
                   required
                   className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
                   value={form.email}
