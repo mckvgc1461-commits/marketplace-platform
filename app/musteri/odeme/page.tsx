@@ -91,6 +91,19 @@ function OdemeContent() {
           </div>
 
           <form onSubmit={handlePayment} className="p-8 space-y-6">
+            {/* GERÇEK ÖDEME UYARISI */}
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-300 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <div className="text-3xl">⚠️</div>
+                <div>
+                  <div className="font-bold text-red-900 text-lg mb-1">GERÇEK ÖDEME UYARISI</div>
+                  <div className="text-red-800 text-sm">
+                    Bu sistem test modu değildir. Girdiğiniz kredi kartından <span className="font-bold">{pkg.price.toLocaleString('tr-TR')} TL</span> gerçekten çekilecektir!
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Ad Soyad</label>

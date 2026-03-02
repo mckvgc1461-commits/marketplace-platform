@@ -11,10 +11,17 @@ export async function POST(req: Request) {
   try {
     const { package: packageType, amount, customer } = await req.json();
 
-    // PayTR API bilgileri
-    const merchant_id = process.env.PAYTR_MERCHANT_ID || '999999';
-    const merchant_key = process.env.PAYTR_MERCHANT_KEY || 'MERCHANT_KEY';
-    const merchant_salt = process.env.PAYTR_MERCHANT_SALT || 'MERCHANT_SALT';
+    // GERÇEK PayTR API bilgileri - .env dosyasından MUTLAKA alınmalı
+    const merchant_id = process.env.PAYTR_MERCHANT_ID;
+    const merchant_key = process.env.PAYTR_MERCHANT_KEY;
+    const merchant_salt = process.env.PAYTR_MERCHANT_SALT;
+
+    // API bilgileri yoksa hata ver
+    if (!merchant_id || !merchant_key || !merchant_salt) {
+      return NextResponse.json({ 
+        error: 'PayTR API bilgileri eksik. Lütfen .env dosyasına PAYTR_MERCHANT_ID, PAYTR_MERCHANT_KEY ve PAYTR_MERCHANT_SALT ekleyin.' 
+      }, { status: 500 });
+    }
     
     const merchant_oid = 'SAAS_' + Date.now();
     const email = customer.email;
@@ -30,12 +37,12 @@ export async function POST(req: Request) {
     const user_phone = customer.phone;
     const merchant_ok_url = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://marketplace-platform-saz4.onrender.com'}/success`;
     const merchant_fail_url = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://marketplace-platform-saz4.onrender.com'}/musteri/odeme`;
-    const user_ip = req.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
+    const user_ip = req.headers.get('x-forwarded-for')?.split(',')[0] || req.headers.get('x-real-ip') || '127.0.0.1';
     const timeout_limit = '30';
-    const debug_on = '1';
-    const test_mode = '1'; // Test modu
+    const debug_on = '0'; // Debug kapalı
+    const test_mode = '0'; // GERÇEK ÖDEME MODU - Para gerçekten çekilir!
     const no_installment = '0';
-    const max_installment = '0';
+    const max_installment = '9'; // 9 taksit
     const currency = 'TL';
     const lang = 'tr';
 
@@ -83,14 +90,17 @@ export async function POST(req: Request) {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        const subdomain = customer.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+        // Benzersiz subdomain oluştur
+        const subdomain = customer.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + Date.now().toString().slice(-4);
         
         await supabase.from('stores').insert({
           owner_id: user.id,
           name: `${customer.name} Mağazası`,
           subdomain: subdomain,
           plan: packageType,
-          status: 'pending'
+          status: 'pending',
+          payment_amount: amount,
+          merchant_oid: merchant_oid
         });
       }
 

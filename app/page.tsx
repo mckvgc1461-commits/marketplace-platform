@@ -8,6 +8,21 @@ export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
+        {/* GERÇEK ÖDEME UYARISI */}
+        <div className="max-w-7xl mx-auto px-4 mb-8">
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl p-6 shadow-2xl">
+            <div className="flex items-center gap-4">
+              <Shield className="flex-shrink-0" size={48} />
+              <div>
+                <div className="text-2xl font-bold mb-1">✅ GERÇEK ÖDEME SİSTEMİ</div>
+                <div className="text-lg opacity-90">
+                  Test modu değil! Ödemeler gerçek kredi kartından çekilir ve hesabınıza yatar.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-6">
