@@ -59,20 +59,30 @@ export default function DashboardPage() {
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const { error } = await supabase.from('products').insert([{
-      store_id: store.id,
-      name: newProduct.name,
-      price: parseFloat(newProduct.price),
-      description: newProduct.description,
-      stock: parseInt(newProduct.stock),
-      image_url: newProduct.image_url,
-      is_active: true
-    }]);
+    try {
+      const { data, error } = await supabase.from('products').insert([{
+        store_id: store.id,
+        name: newProduct.name,
+        price: parseFloat(newProduct.price),
+        description: newProduct.description,
+        stock: parseInt(newProduct.stock),
+        image_url: newProduct.image_url,
+        is_active: true
+      }]).select();
 
-    if (!error) {
+      if (error) {
+        console.error('Supabase error:', error);
+        alert('HATA: ' + error.message);
+        return;
+      }
+
+      alert('✅ Ürün başarıyla eklendi!');
       setShowAddProduct(false);
       setNewProduct({ name: '', price: '', description: '', stock: '', image_url: '' });
       checkUser(); // Yenile
+    } catch (err: any) {
+      console.error('Catch error:', err);
+      alert('HATA: ' + err.message);
     }
   };
 
