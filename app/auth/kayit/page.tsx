@@ -10,7 +10,7 @@ export default function KayitPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [form, setForm] = useState({
-    email: '',
+    username: '',
     password: '',
     storeName: '',
     subdomain: ''
@@ -22,42 +22,41 @@ export default function KayitPage() {
     setError('');
 
     try {
-      // 1. Kullanıcı kaydı
+      // 1. Kullanıcı kaydı - email yerine username@temp.com kullan
+      const tempEmail = `${form.username}@temp.local`;
+      
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: form.email,
+        email: tempEmail,
         password: form.password,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
             store_name: form.storeName,
-            subdomain: form.subdomain
+            subdomain: form.subdomain,
+            username: form.username
           }
         }
       });
 
       if (authError) {
-        // Rate limit hatası varsa, direkt giriş yap
-        if (authError.message.includes('rate limit')) {
-          const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-            email: form.email,
-            password: form.password,
-          });
-          
-          if (signInError) throw new Error('Bu email zaten kayıtlı. Giriş sayfasından giriş yapın.');
-          
-          // Mevcut store'u bul
-          const { data: existingStore } = await supabase
-            .from('stores')
-            .select('subdomain')
-            .eq('owner_id', signInData.user?.id)
-            .single();
-          
-          if (existingStore) {
-            router.push('/musteri/odeme?subdomain=' + existingStore.subdomain);
-            return;
-          }
-        } else {
-          throw authError;
+        // Zaten kayıtlıysa giriş yap
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email: tempEmail,
+          password: form.password,
+        });
+        
+        if (signInError) throw new Error('Bu kullanıcı adı zaten kayıtlı veya şifre yanlış.');
+        
+        // Mevcut store'u bul
+        const { data: existingStore } = await supabase
+          .from('stores')
+          .select('subdomain')
+          .eq('owner_id', signInData.user?.id)
+          .single();
+        
+        if (existingStore) {
+          router.push('/musteri/odeme?subdomain=' + existingStore.subdomain);
+          return;
         }
       }
 
@@ -68,7 +67,7 @@ export default function KayitPage() {
           owner_id: authData.user?.id,
           store_name: form.storeName,
           subdomain: form.subdomain.toLowerCase(),
-          contact_email: form.email,
+          contact_email: tempEmail,
           status: 'pending' // Ödeme yapana kadar pending
         }]);
 
@@ -143,18 +142,19 @@ export default function KayitPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label className="block text-sm font-medium mb-2">Kullanıcı Adı</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
+                <User className="absolute left-3 top-3 text-gray-400" size={20} />
                 <input
                   type="text"
                   required
                   className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="email@example.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  placeholder="ahmet123"
+                  value={form.username}
+                  onChange={(e) => setForm({ ...form, username: e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '') })}
                 />
               </div>
+              <p className="text-xs text-gray-500 mt-1">Sadece harf ve rakam</p>
             </div>
 
             <div>

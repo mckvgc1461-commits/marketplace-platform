@@ -9,7 +9,7 @@ export default function GirisPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,8 +17,10 @@ export default function GirisPage() {
     setError('');
 
     try {
+      const tempEmail = `${form.username}@temp.local`;
+      
       const { error } = await supabase.auth.signInWithPassword({
-        email: form.email,
+        email: tempEmail,
         password: form.password,
       });
 
@@ -42,15 +44,16 @@ export default function GirisPage() {
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label className="block text-sm font-medium mb-2">Kullanıcı Adı</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
                 <input
                   type="text"
                   required
                   className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  placeholder="ahmet123"
+                  value={form.username}
+                  onChange={(e) => setForm({ ...form, username: e.target.value })}
                 />
               </div>
             </div>
