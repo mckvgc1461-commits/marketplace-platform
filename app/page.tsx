@@ -2,10 +2,6 @@
 import { Rocket, Check, Zap, Shield, Globe, TrendingUp, Store, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 export default function HomePage() {
 
   return (
