@@ -37,21 +37,42 @@ export default function KayitPage() {
 
       if (authError) throw authError;
 
-      // 2. Mağaza oluştur
+      // 2. Benzersiz subdomain oluştur
+      let uniqueSubdomain = form.subdomain.toLowerCase();
+      let attempts = 0;
+      let subdomainExists = true;
+
+      while (subdomainExists && attempts < 10) {
+        const { data: existingStore } = await supabase
+          .from('stores')
+          .select('subdomain')
+          .eq('subdomain', uniqueSubdomain)
+          .single();
+
+        if (!existingStore) {
+          subdomainExists = false;
+        } else {
+          // Subdomain kullanılmış, rastgele sayı ekle
+          uniqueSubdomain = form.subdomain.toLowerCase() + Math.floor(Math.random() * 9999);
+          attempts++;
+        }
+      }
+
+      // 3. Mağaza oluştur
       const { error: storeError } = await supabase
         .from('stores')
         .insert([{
           owner_id: authData.user?.id,
           store_name: form.storeName,
-          subdomain: form.subdomain.toLowerCase(),
+          subdomain: uniqueSubdomain,
           contact_email: form.email,
           status: 'pending'
         }]);
 
       if (storeError) throw storeError;
 
-      // 3. Ödeme sayfasına yönlendir
-      router.push('/musteri/odeme?subdomain=' + form.subdomain);
+      // 4. Ödeme sayfasına yönlendir
+      router.push('/musteri/odeme?subdomain=' + uniqueSubdomain);
 
     } catch (err: any) {
       setError(err.message || 'Kayıt başarısız');
